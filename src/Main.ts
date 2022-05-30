@@ -1,15 +1,8 @@
+
+let readlineSync = require('readline-sync');
 let isEqual = require('lodash.isequal');
 
-interface ITree<K, V>{
-    size: number;
-    add(key: K, value: V): void;
-    remove(key: K): void;
-
-    get(key: K): null | V;
-
-}
-
-class MyTree <K,V> implements ITree<K, V>{
+class MyTree <K,V> {
 
     root: TreeNode<K, V> | null;
 
@@ -130,6 +123,7 @@ class MyTree <K,V> implements ITree<K, V>{
             parent.left = e;
         else
             parent.right = e;
+        this.size++;
     }
 
 
@@ -183,7 +177,7 @@ function compareTo<O>(obj1: O, obj2 : O):number{
     let fieldsObj1 = Object.keys(obj1)
     let fieldsObj2 = Object.keys(obj2)
 
-    if (fieldsObj1.length == 0) {
+    if (!isObject(obj1)) {
         if (obj1 > obj2) {
             return 1;
         }
@@ -198,20 +192,7 @@ function compareTo<O>(obj1: O, obj2 : O):number{
         let val1 = fieldsObj1[i];
         let val2 = fieldsObj2[i];
         let areObjects = isObject(val1) && isObject(val2);
-        if (!areObjects) {
-            if(val1 > val2) {
-                return 1;
-            }
-            else if(val1<val2) {
-                return -1;
-            }
-            else {
-                return 0;
-            }
-        }
-        else {
-            compareTo(val1, val2);
-        }
+        compareTo(val1, val2);
     }
     return -2;
 }
@@ -254,19 +235,38 @@ class TreeNode <K,V> {
         this.value = value;
     }
     public printNode() {
-        return "{" + "K:" + this.key + " = " + "V:" + this.value + "P:" + this.parent + "}";
+        if (this.parent != null)
+            return "{" + "K:" + this.key + " = " + "V:" + this.value + "P:" + this.parent.value + "}";
+        else 
+            return "{" + "K:" + this.key + " = " + "V:" + this.value + "P:" + this.parent + "}";
     }
 }
 
+function main() {
+    let tree : MyTree<string, number> = new MyTree<string, number>();
 
-let tree : MyTree<number, string> = new MyTree<number, string>();
-tree.add(10, "str10");
-tree.add(8, "str28");
-tree.add(11, "str20");
-tree.add(9, "str24");
-tree.add(7, "str2");
-tree.printTree();
-console.log("===================================");
-tree.remove(8);
-tree.printTree();
-console.log(tree.get(9));
+    while (true) {
+        let operation = readlineSync.question("Input operation add, remove, get, print, new or break: ");
+
+        if (operation === "add") {
+            let key = readlineSync.question("Input key for add operation: ");
+            let value = readlineSync.question("Input value for add operation: ");
+            tree.add(key,value);
+        } else if (operation === "remove") {
+            let key = readlineSync.question("Input key for remove operation: ");
+            tree.remove(key);
+        } else if (operation === "get") {
+            let key = readlineSync.question("Input key for get operation: ");
+            tree.get(key);
+        } else if (operation === "print") {
+            tree.printTree();
+        } else if (operation === "break") {
+            break;
+        } else if (operation === "new") {
+            tree = new MyTree<string, number>();
+        } else {
+            console.log("Try again");
+        }
+    }
+}
+main();
