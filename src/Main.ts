@@ -236,7 +236,7 @@ class TreeNode <K,V> {
     }
     public printNode() {
         if (this.parent != null)
-            return "{" + "K:" + this.key + " = " + "V:" + this.value + "P:" + this.parent.value + "}";
+            return "{" + "K:" + this.key + " = " + "V:" + this.value + "P:" + this.parent.key + "}";
         else 
             return "{" + "K:" + this.key + " = " + "V:" + this.value + "P:" + this.parent + "}";
     }
